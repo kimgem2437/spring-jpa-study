@@ -7,6 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,16 +18,37 @@ public class JpaMain {
         tx.begin();
 
         try{
-            Address address = new Address("city", "street", "zipcode");
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setHomeAddress(address);
+            member.setHomeAddress(new Address("homeCity", "street", "zipcode"));
+
+            member.getFavoriteFoods().add("국밥");
+            member.getFavoriteFoods().add("제육");
+            member.getFavoriteFoods().add("돈까스");
+
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "zipcode"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "zipcode"));
+
             em.persist(member);
 
-            Address newAddress = new Address(address.getCity(), address.getStreet(), address.getZipcode());
-            member.setHomeAddress(newAddress);
+            em.flush();
+            em.clear();
 
+            System.out.println("==========START==========");
+            Member findMember = em.find(Member.class, member.getId());
+
+            //homeCity => newCity
+//            findMember.getHomeAddress().setCity("newCity");
+//            Address a = findMember.getHomeAddress();
+//            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
+
+            //치킨 -> 한식
+            findMember.getFavoriteFoods().remove("돈까스");
+            findMember.getFavoriteFoods().add("한식");
+
+            findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "10000"));
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
 
             tx.commit();
         } catch (Exception e){
