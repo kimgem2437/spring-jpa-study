@@ -1,13 +1,10 @@
 package hellojpa;
 
-import org.hibernate.Hibernate;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Set;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -21,34 +18,17 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setHomeAddress(new Address("homeCity", "street", "zipcode"));
-
-            member.getFavoriteFoods().add("국밥");
-            member.getFavoriteFoods().add("제육");
-            member.getFavoriteFoods().add("돈까스");
-
-            member.getAddressHistory().add(new AddressEntity("old1", "street", "zipcode"));
-            member.getAddressHistory().add(new AddressEntity("old2", "street", "zipcode"));
-
             em.persist(member);
 
+            //flush -> commit. query
             em.flush();
-            em.clear();
+            //dbconn.excuteQuery("select * from member");
 
-            System.out.println("==========START==========");
-            Member findMember = em.find(Member.class, member.getId());
+            List<Member> resultList = em.createNativeQuery("select MEMBER_ID, city, street, zipcode, USERNAME from MEMBER", Member.class).getResultList();
 
-            //homeCity => newCity
-//            findMember.getHomeAddress().setCity("newCity");
-//            Address a = findMember.getHomeAddress();
-//            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));
-
-            //치킨 -> 한식
-            findMember.getFavoriteFoods().remove("돈까스");
-            findMember.getFavoriteFoods().add("한식");
-
-            findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "10000"));
-            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+            for(Member member1 : resultList) {
+                System.out.println("member1 = " + member1);
+            }
 
             tx.commit();
         } catch (Exception e){
