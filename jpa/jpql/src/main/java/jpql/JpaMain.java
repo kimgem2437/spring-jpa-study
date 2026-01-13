@@ -28,7 +28,7 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select nullif(m.username, '관리자') from Member m";
+            String query = "select function('group_concat', m.username) from Member m";
             List<String> result = em.createQuery(query, String.class)
                     .getResultList();
 
