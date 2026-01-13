@@ -29,7 +29,7 @@ public class JpaMain {
             em.clear();
 
             String query = "select m.username, 'HELLO', true From Member m" +
-                    "where m.type = :userType";
+                    "where m.age between 0 and 10";
             List<Member> result = em.createQuery(query, Member.class)
                     .setParameter("userType", MemberType.ADMIN)
                     .getResultList();
