@@ -14,6 +14,11 @@ public class Member {
     @JoinColumn(name = "Team_ID")
     private Team team;
 
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
+    }
+
     public int getId() {
         return id;
     }
@@ -45,5 +50,9 @@ public class Member {
                 ", username='" + username + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
