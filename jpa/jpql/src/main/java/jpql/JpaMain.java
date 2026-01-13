@@ -19,6 +19,7 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
             member.setAge(10);
+            member.setType(MemberType.ADMIN);
 
             member.setTeam(team);
 
@@ -27,8 +28,10 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select m from Member m left join Team t on m.username = t.name";
+            String query = "select m.username, 'HELLO', true From Member m" +
+                    "where m.type = :userType";
             List<Member> result = em.createQuery(query, Member.class)
+                    .setParameter("userType", MemberType.ADMIN)
                     .getResultList();
 
             tx.commit();
