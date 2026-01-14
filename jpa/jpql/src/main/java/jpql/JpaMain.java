@@ -28,8 +28,8 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select function('group_concat', m.username) from Member m";
-            List<String> result = em.createQuery(query, String.class)
+            String query = "select m.team from Member m";
+            List<Team> result = em.createQuery(query, Team.class)
                     .getResultList();
 
             tx.commit();
