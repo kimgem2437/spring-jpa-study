@@ -39,10 +39,9 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select m From Member m join fetch m.team t";
-            List<Member> result = em.createQuery(query, Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(1)
+            String query = "select m From Member m where m.team = :team";
+            List<Member> members = em.createQuery(query, Member.class)
+                    .setParameter("team", teamA)
                     .getResultList();
 
             tx.commit();
